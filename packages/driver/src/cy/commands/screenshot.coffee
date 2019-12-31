@@ -170,10 +170,16 @@ takeElementScreenshot = ($el, state, automationOptions) ->
 
   scrolls = _.map _.times(numScreenshots), (index) ->
     y = elPosition.fromElWindow.top + (viewportHeight * index)
-    
+
     afterScroll = ->
+      # elPosition = applyPaddingToElementPositioning(
+      #   $dom.getElementPositioning($el),
+      #   automationOptions
+      # )
       x = Math.min(viewportWidth, elPosition.fromElViewport.left)
       width = Math.min(viewportWidth - x, elPosition.width)
+      overlapOrig = (numScreenshots - 1) * viewportHeight + elPosition.fromElViewport.top;
+      heightLeftOrig = elPosition.fromElViewport.bottom - overlap;
 
       if numScreenshots is 1
         return {
@@ -184,22 +190,33 @@ takeElementScreenshot = ($el, state, automationOptions) ->
         }
 
       if index + 1 is numScreenshots
-        overlap = (numScreenshots - 1) * viewportHeight + elPosition.fromElViewport.top
-        heightLeft = elPosition.fromElViewport.bottom - overlap
-        
+        # elPosition = applyPaddingToElementPositioning(
+        #   $dom.getElementPositioning($el),
+        #   automationOptions
+        # )
+        # overlap = (numScreenshots - 1) * viewportHeight + elPosition.fromElViewport.top
+        # heightLeft = elPosition.fromElViewport.bottom - overlap
+
+        # # recalc
+        # overlap = (3 - 1)*30+(-60)
+        # heightLeft = 20 - 0
+
+        # # don't recalc
+        # overlap = (3 - 1)*30+10
+        # heightLeft = 90 - 70
+
         return {
           x: x
-          y: overlap
+          y: Math.max(0, elPosition.fromElViewport.top)
           width: width
-          height: heightLeft
+          height: heightLeftOrig
         }
-        
+
       return {
         x: x
         y: Math.max(0, elPosition.fromElViewport.top)
         width: width
-        ## TODO: try simplifying to just 'viewportHeight'
-        height: Math.min(viewportHeight, elPosition.fromElViewport.top + elPosition.height)
+        height: Math.min(viewportHeight)
       }
 
     { y, afterScroll }
