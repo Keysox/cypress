@@ -172,10 +172,6 @@ takeElementScreenshot = ($el, state, automationOptions) ->
     y = elPosition.fromElWindow.top + (viewportHeight * index)
     
     afterScroll = ->
-      elPosition = applyPaddingToElementPositioning(
-        $dom.getElementPositioning($el),
-        automationOptions
-      )
       x = Math.min(viewportWidth, elPosition.fromElViewport.left)
       width = Math.min(viewportWidth - x, elPosition.width)
 
