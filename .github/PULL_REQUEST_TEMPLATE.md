@@ -1,7 +1,7 @@
-<!-- 
+<!--
 Thanks for contributing!
-Read our contribution guidelines here: 
-https://github.com/cypress-io/cypress/blob/develop/.github/CONTRIBUTING.md 
+Read our contribution guidelines here:
+https://github.com/cypress-io/cypress/blob/develop/CONTRIBUTING.md
 -->
 
 <!-- Example: "Closes #1234" -->
@@ -32,9 +32,9 @@ Screenshots or GIFs are preferred.
 
 ### PR Tasks
 
-<!-- 
+<!--
 These tasks must be completed before a PR is merged.
-Delete tasks if they are not applicable. 
+Delete tasks if they are not applicable.
 -->
 
 - [ ] Have tests been added/updated?

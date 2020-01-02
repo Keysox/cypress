@@ -170,7 +170,7 @@ takeElementScreenshot = ($el, state, automationOptions) ->
 
   scrolls = _.map _.times(numScreenshots), (index) ->
     y = elPosition.fromElWindow.top + (viewportHeight * index)
-    
+
     afterScroll = ->
       elPosition = applyPaddingToElementPositioning(
         $dom.getElementPositioning($el),
@@ -190,14 +190,14 @@ takeElementScreenshot = ($el, state, automationOptions) ->
       if index + 1 is numScreenshots
         overlap = (numScreenshots - 1) * viewportHeight + elPosition.fromElViewport.top
         heightLeft = elPosition.fromElViewport.bottom - overlap
-        
+
         return {
           x: x
           y: overlap
           width: width
           height: heightLeft
         }
-        
+
       return {
         x: x
         y: Math.max(0, elPosition.fromElViewport.top)
@@ -292,17 +292,27 @@ takeScreenshot = (Cypress, state, screenshotConfig, options = {}) ->
 
   before()
   .then ->
-    onBeforeScreenshot and onBeforeScreenshot.call(state("ctx"), $el)
+    determineAndTakeScreenshot = ->
+      onBeforeScreenshot and onBeforeScreenshot.call(state("ctx"), $el)
 
-    $Screenshot.onBeforeScreenshot($el)
+      $Screenshot.onBeforeScreenshot($el)
 
-    switch
-      when $dom.isElement(subject)
-        takeElementScreenshot($el, state, automationOptions)
-      when capture is "fullPage"
-        takeFullPageScreenshot(state, automationOptions)
-      else
-        automateScreenshot(state, automationOptions)
+      switch
+        when $dom.isElement(subject)
+          takeElementScreenshot($el, state, automationOptions)
+        when capture is "fullPage"
+          takeFullPageScreenshot(state, automationOptions)
+        else
+          automateScreenshot(state, automationOptions)
+
+    if automationOptions.delay?
+      return new Promise((resolve) ->
+        setTimeout(() ->
+          resolve(determineAndTakeScreenshot())
+        , automationOptions.delay)
+      )
+    else return determineAndTakeScreenshot()
+
   .then (props) ->
     onAfterScreenshot and onAfterScreenshot.call(state("ctx"), $el, props)
 

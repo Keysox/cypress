@@ -10,6 +10,7 @@ reset = -> {
   blackout: []
   onBeforeScreenshot: ->
   onAfterScreenshot: ->
+  delay: null
 }
 
 defaults = reset()
@@ -139,6 +140,14 @@ validate = (props, cmd, log) ->
       })
 
     values.padding = normalizePadding(padding)
+
+  if delay = props.delay
+    if not (_.isNumber(delay) or _.isNull(delay))
+      $utils.throwErrByPath("screenshot.invalid_delay", {
+        log: log
+        args: { cmd: cmd, arg: $utils.stringify(delay) }
+      })
+    values.delay = delay
 
   validateAndSetCallback(props, values, cmd, log, "onBeforeScreenshot")
   validateAndSetCallback(props, values, cmd, log, "onAfterScreenshot")
